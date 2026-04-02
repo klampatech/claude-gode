@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AdkAgent } from './AdkAgent.js';
 import { MemoryStorage } from './memdir/MemoryStorage.js';
 import { EnvParser } from './context/EnvParser.js';
+import { snipContext, buildSnippedPrompt } from './context/ContextSnipper.js';
 
 export interface Message {
   role: 'user' | 'assistant' | 'tool';
@@ -205,6 +206,25 @@ export class QueryEngine {
     userInput: string,
     context: ConversationContext,
   ): Promise<string> {
+    // Apply context snipping to handle overflow
+    const maxTokens = this.options.contextWindow || 100000;
+    const contextObj = {
+      userRequest: userInput,
+      history: this.messages.map(m =>
+        `${m.role}: ${m.content.substring(0, 200)}${m.content.length > 200 ? '...' : ''}`
+      ).join('\n'),
+      gitState: context.gitState,
+      fileTree: context.fileTree,
+      envVars: context.envVars,
+      memories: context.memories,
+      lspSymbols: context.lspSymbols,
+    };
+
+    // Use snipped prompt if context is large
+    if (this.shouldSnip(contextObj, maxTokens)) {
+      return buildSnippedPrompt(contextObj, userInput);
+    }
+
     // Include conversation history in prompt
     const historySection = this.messages.length > 0
       ? `## Conversation History\n${this.messages.map(m =>
@@ -219,6 +239,20 @@ export class QueryEngine {
       : '';
 
     return `${historySection}${contextSection}${memoriesSection}## User Request\n${userInput}`;
+  }
+
+  /**
+   * Determine if context should be snipped based on estimated size
+   */
+  private shouldSnip(context: Record<string, unknown>, maxTokens: number): boolean {
+    const charsPerToken = 4;
+    const totalChars = Object.values(context).reduce(
+      (sum, val) => sum + String(val || '').length,
+      0
+    );
+    const estimatedTokens = Math.ceil(totalChars / charsPerToken);
+    // Snip if we're at 80% of limit
+    return estimatedTokens > maxTokens * 0.8;
   }
 
   async processQuery(userInput: string): Promise<void> {
