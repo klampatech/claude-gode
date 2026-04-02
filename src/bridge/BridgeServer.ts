@@ -10,7 +10,7 @@ import { FileSync, type FileSyncConfig } from './FileSync.js';
 import { SessionHandoffManager, type SessionHandoffConfig } from './SessionHandoff.js';
 import { RemoteSession, type RemoteSessionConfig } from './RemoteSession.js';
 import { OAuthFlow, type OAuthConfig } from './OAuthFlow.js';
-import { SessionHandoff } from './Protocol.js';
+import { SessionHandoff, type BridgeMessage } from './Protocol.js';
 import { logger } from '../utils/logger.js';
 import { createServer, Server } from 'http';
 
@@ -207,7 +207,7 @@ export class BridgeServer {
     sessionId: string,
     from: 'terminal' | 'vscode',
     to: 'terminal' | 'vscode',
-    sessionState: any,
+    sessionState: Record<string, unknown>,
   ): Promise<SessionHandoff> {
     if (!this.sessionHandoff) {
       throw new Error('Session handoff not enabled');
@@ -237,7 +237,7 @@ export class BridgeServer {
   /**
    * Accept session handoff
    */
-  async acceptHandoff(handoff: SessionHandoff): Promise<any> {
+  async acceptHandoff(handoff: SessionHandoff): Promise<Record<string, unknown>> {
     if (!this.sessionHandoff) {
       throw new Error('Session handoff not enabled');
     }
@@ -313,9 +313,10 @@ export class BridgeServer {
           res.writeHead(404, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: 'Not found' }));
         }
-      } catch (error: any) {
+      } catch (error) {
+        const err = error as Error;
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: error.message }));
+        res.end(JSON.stringify({ error: err.message }));
       }
     });
 
@@ -327,7 +328,7 @@ export class BridgeServer {
   /**
    * Handle incoming message from remote session
    */
-  private handleRemoteMessage(message: any): void {
+  private handleRemoteMessage(message: BridgeMessage<unknown>): void {
     // Forward to appropriate handler based on message type
     if (message.type === 'terminal_output') {
       // Terminal output from remote

@@ -5,7 +5,7 @@
  * VS Code's file tree in sync with Claude Code's view.
  */
 
-import { watch, FSWatcher } from 'fs';
+import { watch, FSWatcher, accessSync, readFileSync } from 'fs';
 import { join, relative, extname } from 'path';
 import { FileEvent } from './Protocol.js';
 import { logger } from '../utils/logger.js';
@@ -122,8 +122,9 @@ export class FileSync {
       });
 
       this.watchers.push(watcher);
-    } catch (error: any) {
-      logger.error({ path: dirPath, error: error.message }, 'Failed to watch directory');
+    } catch (error) {
+      const err = error as Error;
+      logger.error({ path: dirPath, error: err.message }, 'Failed to watch directory');
     }
   }
 
@@ -144,8 +145,7 @@ export class FileSync {
     if (eventType === 'rename') {
       // Check if file exists to determine if created or deleted
       try {
-        const fs = require('fs');
-        fs.accessSync(filePath);
+        accessSync(filePath);
         type = 'created';
       } catch {
         type = 'deleted';
@@ -158,7 +158,7 @@ export class FileSync {
     let content = '';
     if (type !== 'deleted' && this.isTextFile(filePath)) {
       try {
-        content = require('fs').readFileSync(filePath, 'utf-8');
+        content = readFileSync(filePath, 'utf-8');
       } catch {
         // Binary or unreadable file - leave empty
       }

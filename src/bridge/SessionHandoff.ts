@@ -210,8 +210,9 @@ export class SessionHandoffManager {
       await this.memoryStorage.saveSession(sessionData);
 
       logger.debug({ sessionId: state.session_id }, 'Session state persisted');
-    } catch (error: any) {
-      logger.error({ sessionId: state.session_id, error: error.message }, 'Failed to persist session state');
+    } catch (error) {
+      const err = error as Error;
+      logger.error({ sessionId: state.session_id, error: err.message }, 'Failed to persist session state');
       throw error;
     }
   }
@@ -231,8 +232,9 @@ export class SessionHandoffManager {
       }
 
       logger.debug({ sessionId: state.session_id }, 'Memory updated from session');
-    } catch (error: any) {
-      logger.error({ error: error.message }, 'Failed to update memory from session');
+    } catch (error) {
+      const err = error as Error;
+      logger.error({ error: err.message }, 'Failed to update memory from session');
     }
   }
 }
