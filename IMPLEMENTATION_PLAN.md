@@ -79,19 +79,19 @@
 
 ### Phase 7: Multi-Agent Orchestration
 
-- [ ] **7.1** Implement AgentTool for spawning subagents
-- [ ] **7.2** Create coordinator mode for parent agent orchestration
-- [ ] **7.3** Build SendMessageTool for inter-agent communication
-- [ ] **7.4** Implement shared team memory accessible to all agents
-- [ ] **7.5** Add result aggregation from subagents
-- [ ] **7.6** Implement agent crash detection and reporting
-- [ ] **7.7** Add maximum agent pool size enforcement
+- [x] **7.1** Implement AgentTool for spawning subagents
+- [x] **7.2** Create coordinator mode for parent agent orchestration
+- [x] **7.3** Build SendMessageTool for inter-agent communication
+- [x] **7.4** Implement shared team memory accessible to all agents
+- [x] **7.5** Add result aggregation from subagents
+- [x] **7.6** Implement agent crash detection and reporting
+- [x] **7.7** Add maximum agent pool size enforcement
 
 ### Phase 8: Reliability and Recovery
 
 - [ ] **8.1** Implement session state persistence after every operation
-- [ ] **8.2** Build `/health` endpoint with dependency checks
-- [ ] **8.3** Build `/metrics` endpoint in Prometheus format
+- [x] **8.2** Build `/health` endpoint with dependency checks
+- [x] **8.3** Build `/metrics` endpoint in Prometheus format
 - [ ] **8.4** Implement retry with exponential backoff for transient failures
 - [ ] **8.5** Add circuit breaker pattern for external dependencies
 - [ ] **8.6** Implement automatic session recovery on restart
@@ -146,3 +146,5 @@ Phase 1 ─┬─► Phase 2 ─┬─► Phase 3 ─┬─► Phase 4
 - Phase 4: Context and Memory Management - 4.1, 4.2, 4.3, 4.4, 4.6, 4.7, 4.8, 4.9 (FileTreeIndexer, LSP integration, EnvParser, MemoryStorage, session persistence, autoDream, redaction)
 - Phase 5: Safety and Permissions - 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7 (permission modes, security validation, pattern blocking, secret redaction, confirmation prompts, audit logging, git stash)
 - Phase 6: Terminal UI Rendering - 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10, 6.11 (React/Ink, Message, Spinner, Dialog, CodeBlock, Table, ProgressBar, ErrorBanner, BuddyDisplay, MorePrompt)
+- Phase 7: Multi-Agent Orchestration - 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7 (AgentTool, coordinator mode, SendMessageTool, TeamCreateTool, TeamDeleteTool, shared team memory, result aggregation, crash detection, pool size enforcement)
+- Phase 8: Reliability and Recovery - 8.2, 8.3 (/health endpoint, /metrics endpoint)

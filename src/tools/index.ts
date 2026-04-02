@@ -9,3 +9,9 @@ export { WebFetchTool } from './WebFetchTool.js';
 export { TaskCreateTool, type Task } from './TaskCreateTool.js';
 export { TaskListTool } from './TaskListTool.js';
 export { TaskUpdateTool } from './TaskUpdateTool.js';
+
+// Multi-agent tools
+export { AgentTool } from '../coordinator/AgentTool.js';
+export { SendMessageTool } from '../coordinator/SendMessageTool.js';
+export { TeamCreateTool } from '../coordinator/TeamCreateTool.js';
+export { TeamDeleteTool } from '../coordinator/TeamDeleteTool.js';
