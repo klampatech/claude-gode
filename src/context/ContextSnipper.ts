@@ -188,7 +188,7 @@ export function snipContext(
   }
 
   // Recalculate after removals
-  let newTotal = Object.values(resultContext).reduce((sum, val) => sum + String(val).length, 0);
+  let newTotal = Object.values(resultContext).reduce((sum: number, val) => sum + String(val).length, 0);
 
   // Strategy 2: Truncate large sections proportionally
   if (newTotal > maxChars) {
@@ -201,7 +201,7 @@ export function snipContext(
         const truncated = original.slice(0, Math.floor(original.length * 0.5));
         resultContext[sectionKey] = truncated + '\n[... truncated for context limit ...]';
         strategies.push(`truncated:${chunk.section}_50%`);
-        newTotal = Object.values(resultContext).reduce((sum, val) => sum + String(val).length, 0);
+        newTotal = Object.values(resultContext).reduce((sum: number, val) => sum + String(val).length, 0);
       }
     }
   }
@@ -209,7 +209,7 @@ export function snipContext(
   // Strategy 3: Final hard truncate if still over limit
   if (newTotal > maxChars) {
     let currentTotal = Object.entries(resultContext).reduce(
-      (sum, [_, val]) => sum + String(val).length,
+      (sum: number, [_, val]) => sum + String(val).length,
       0
     );
 
@@ -229,7 +229,7 @@ export function snipContext(
     }
   }
 
-  const finalLength = Object.values(resultContext).reduce((sum, val) => sum + String(val).length, 0);
+  const finalLength = Object.values(resultContext).reduce((sum: number, val) => sum + String(val).length, 0);
 
   logger.debug(
     {

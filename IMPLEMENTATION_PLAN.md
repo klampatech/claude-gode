@@ -47,7 +47,7 @@
 - [x] **4.2** Build file tree indexer with change detection
 - [x] **4.3** Add LSP integration for symbol-level context
 - [x] **4.4** Implement shell environment variable tracking (.env parsing) - EnvParser in context/, integrated into QueryEngine
-- [ ] **4.5** Build context injection protocol with snipping for overflow
+- [x] **4.5** Build context injection protocol with snipping for overflow
 - [x] **4.6** Create memory storage system (`memdir/` structure)
 - [x] **4.7** Implement session persistence across restarts
 - [x] **4.8** Add autoDream background memory consolidation

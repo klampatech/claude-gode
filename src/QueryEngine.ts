@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AdkAgent } from './AdkAgent.js';
 import { MemoryStorage } from './memdir/MemoryStorage.js';
 import { EnvParser } from './context/EnvParser.js';
-import { snipContext, buildSnippedPrompt } from './context/ContextSnipper.js';
+import { buildSnippedPrompt } from './context/ContextSnipper.js';
 
 export interface Message {
   role: 'user' | 'assistant' | 'tool';
@@ -247,7 +247,7 @@ export class QueryEngine {
   private shouldSnip(context: Record<string, unknown>, maxTokens: number): boolean {
     const charsPerToken = 4;
     const totalChars = Object.values(context).reduce(
-      (sum, val) => sum + String(val || '').length,
+      (sum: number, val) => sum + String(val || '').length,
       0
     );
     const estimatedTokens = Math.ceil(totalChars / charsPerToken);

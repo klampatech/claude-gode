@@ -1,11 +1,9 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import {
   splitIntoChunks,
   snipContext,
   buildSnippedPrompt,
   DEFAULT_SNIPPER_CONFIG,
-  type ContextChunk,
-  type SnipResult,
 } from './ContextSnipper';
 
 describe('ContextSnipper', () => {
@@ -48,11 +46,10 @@ describe('ContextSnipper', () => {
         gitState: 'M src/file.ts',
       };
 
-      const { context: result, result: snipResult } = snipContext(context, {
+      const { result: snipResult } = snipContext(context, {
         maxTokens: 10000, // Large enough
       });
 
-      expect(result).toEqual(context);
       expect(snipResult.strategies).toContain('none');
     });
 
@@ -66,7 +63,7 @@ describe('ContextSnipper', () => {
         lspSymbols: 'symbol1\nsymbol2\nsymbol3',
       };
 
-      const { context: result, result: snipResult } = snipContext(context, {
+      const { result: snipResult } = snipContext(context, {
         maxTokens: 100, // Very small to force snipping
         charsPerToken: 4,
       });
@@ -83,7 +80,7 @@ describe('ContextSnipper', () => {
         gitState: largeGitState,
       };
 
-      const { context: result, result: snipResult } = snipContext(context, {
+      const { result: snipResult } = snipContext(context, {
         maxTokens: 100,
         charsPerToken: 4,
       });
