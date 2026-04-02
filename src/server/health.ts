@@ -6,6 +6,7 @@
 import { execSync } from 'child_process';
 import { accessSync, constants } from 'fs';
 import { logger } from '../utils/logger.js';
+import { metricsEndpointHandler } from './metrics.js';
 
 export interface HealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -146,7 +147,7 @@ export function startHealthServer(port: number = 8080): void {
             res.end(JSON.stringify(body));
           });
         } else if (req.url === '/metrics') {
-          metricsHandler().then(({ status, body }) => {
+          metricsEndpointHandler().then(({ status, body }) => {
             res.writeHead(status, { 'Content-Type': 'text/plain' });
             res.end(body);
           });
@@ -163,15 +164,4 @@ export function startHealthServer(port: number = 8080): void {
     .catch((err) => {
       logger.error({ err }, 'Failed to start health server');
     });
-}
-
-// Metrics placeholder - will be implemented in metrics.ts
-export async function metricsHandler(): Promise<{
-  status: number;
-  body: string;
-}> {
-  return {
-    status: 200,
-    body: '# Metrics not yet implemented\n',
-  };
 }
