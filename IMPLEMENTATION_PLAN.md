@@ -99,12 +99,12 @@
 
 ### Phase 9: IDE Bridge Integration
 
-- [ ] **9.1** Build VS Code extension WebSocket bridge protocol
-- [ ] **9.2** Implement remote session connection (teleport)
-- [ ] **9.3** Add trusted device OAuth flow
-- [ ] **9.4** Implement terminal output mirroring to VS Code panel
-- [ ] **9.5** Add file system event synchronization
-- [ ] **9.6** Implement session handoff between terminal and VS Code
+- [x] **9.1** Build VS Code extension WebSocket bridge protocol
+- [x] **9.2** Implement remote session connection (teleport)
+- [x] **9.3** Add trusted device OAuth flow
+- [x] **9.4** Implement terminal output mirroring to VS Code panel
+- [x] **9.5** Add file system event synchronization
+- [x] **9.6** Implement session handoff between terminal and VS Code
 
 ### Phase 10: Additional Tools and Integration
 
@@ -148,4 +148,5 @@ Phase 1 ─┬─► Phase 2 ─┬─► Phase 3 ─┬─► Phase 4
 - Phase 6: Terminal UI Rendering - 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10, 6.11 (React/Ink, Message, Spinner, Dialog, CodeBlock, Table, ProgressBar, ErrorBanner, BuddyDisplay, MorePrompt)
 - Phase 7: Multi-Agent Orchestration - 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7 (AgentTool, coordinator mode, SendMessageTool, TeamCreateTool, TeamDeleteTool, shared team memory, result aggregation, crash detection, pool size enforcement)
 - Phase 8: Reliability and Recovery - 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7 (session persistence, retry with exponential backoff, circuit breaker, session recovery, global error handlers)
+- Phase 9: IDE Bridge Integration - 9.1, 9.2, 9.3, 9.4, 9.5, 9.6 (VsCodeBridge WebSocket server, RemoteSession for teleport, OAuthFlow device code auth, FileSync for file events, SessionHandoffManager)
 - Phase 10: Additional Tools and Integration - 10.1, 10.2, 10.3, 10.4, 10.5 (MCPTool, SkillTool, scheduling tools, team tools, voice input)
