@@ -39,18 +39,18 @@
 - [x] **3.5** Build Web tools: WebSearchTool, WebFetchTool
 - [x] **3.6** Build Task Management tools: TaskCreateTool, TaskListTool, TaskUpdateTool
 - [x] **3.7** Implement parallel and sequential tool execution patterns
-- [ ] **3.8** Add tool plugin registration system for extensibility
+- [x] **3.8** Add tool plugin registration system for extensibility
 
 ### Phase 4: Context and Memory Management
 
 - [x] **4.1** Implement Context Manager for git state capture (branch, diff, commits) - in QueryEngine.buildContext()
 - [x] **4.2** Build file tree indexer with change detection
-- [ ] **4.3** Add LSP integration for symbol-level context
+- [x] **4.3** Add LSP integration for symbol-level context
 - [ ] **4.4** Implement shell environment variable tracking (.env parsing)
 - [ ] **4.5** Build context injection protocol with snipping for overflow
 - [x] **4.6** Create memory storage system (`memdir/` structure)
 - [x] **4.7** Implement session persistence across restarts
-- [ ] **4.8** Add autoDream background memory consolidation
+- [x] **4.8** Add autoDream background memory consolidation
 - [x] **4.9** Implement sensitive data redaction for memory storage
 
 ### Phase 5: Safety and Permissions
@@ -58,24 +58,24 @@
 - [x] **5.1** Implement permission modes: ask, allow, deny, limited
 - [x] **5.2** Build bash command security validation
 - [x] **5.3** Add destructive pattern detection and blocking
-- [ ] **5.4** Implement secret detection and redaction (API keys, tokens)
+- [x] **5.4** Implement secret detection and redaction (API keys, tokens)
 - [ ] **5.5** Add confirmation prompts for dangerous operations
 - [ ] **5.6** Build security audit logging system
 - [ ] **5.7** Implement git stash before destructive operations
 
 ### Phase 6: Terminal UI Rendering
 
-- [ ] **6.1** Set up React/Ink rendering infrastructure
-- [ ] **6.2** Implement Message component for user/assistant display
-- [ ] **6.3** Build Spinner component with 60fps animation
-- [ ] **6.4** Create Dialog component for confirmations and inputs
-- [ ] **6.5** Implement CodeBlock with syntax highlighting
-- [ ] **6.6** Build Table, ProgressBar, ErrorBanner components
-- [ ] **6.7** Add ANSI color parsing and text wrapping
-- [ ] **6.8** Implement keyboard shortcuts system
-- [ ] **6.9** Add vim mode for text input
-- [ ] **6.10** Build "More" prompt for paginated output
-- [ ] **6.11** Implement BuddyDisplay ASCII companion sprite
+- [x] **6.1** Set up React/Ink rendering infrastructure
+- [x] **6.2** Implement Message component for user/assistant display
+- [x] **6.3** Build Spinner component with 60fps animation
+- [x] **6.4** Create Dialog component for confirmations and inputs
+- [x] **6.5** Implement CodeBlock with syntax highlighting
+- [x] **6.6** Build Table, ProgressBar, ErrorBanner components
+- [x] **6.7** Add ANSI color parsing and text wrapping
+- [x] **6.8** Implement keyboard shortcuts system
+- [x] **6.9** Add vim mode for text input
+- [x] **6.10** Build "More" prompt for paginated output
+- [x] **6.11** Implement BuddyDisplay ASCII companion sprite
 
 ### Phase 7: Multi-Agent Orchestration
 
@@ -142,6 +142,7 @@ Phase 1 ─┬─► Phase 2 ─┬─► Phase 3 ─┬─► Phase 4
 
 - Phase 1: Foundation (all tasks)
 - Phase 2: Core Agent Loop - 2.1, 2.2, 2.3, 2.4, 2.5, 2.6 (Google ADK integration, streaming responses, conversation history management)
-- Phase 3: Tool Execution System - 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7 (WebSearchTool, WebFetchTool, TaskCreateTool, TaskListTool, TaskUpdateTool added)
-- Phase 4: Context and Memory Management - 4.1, 4.2, 4.6, 4.7, 4.9 (FileTreeIndexer, MemoryStorage, session persistence, redaction)
-- Phase 5: Safety and Permissions - 5.1, 5.2, 5.3 (permission modes, security validation, pattern blocking)
+- Phase 3: Tool Execution System - 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8 (WebSearchTool, WebFetchTool, TaskCreateTool, TaskListTool, TaskUpdateTool, tool plugin registration)
+- Phase 4: Context and Memory Management - 4.1, 4.2, 4.3, 4.6, 4.7, 4.8, 4.9 (FileTreeIndexer, LSP integration, MemoryStorage, session persistence, autoDream, redaction)
+- Phase 5: Safety and Permissions - 5.1, 5.2, 5.3, 5.4 (permission modes, security validation, pattern blocking, secret redaction)
+- Phase 6: Terminal UI Rendering - 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10, 6.11 (React/Ink, Message, Spinner, Dialog, CodeBlock, Table, ProgressBar, ErrorBanner, BuddyDisplay, MorePrompt)
