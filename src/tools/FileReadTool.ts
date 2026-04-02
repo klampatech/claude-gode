@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { readFile } from 'fs/promises';
-import type { Tool, ToolContext, ToolResult } from '../Tool.js';
+import type { Tool, ToolContext, ToolResult } from '../Tool';
+import { logger } from '../utils/logger';
 
 /**
  * Reads file contents from the filesystem.
@@ -19,8 +20,14 @@ export class FileReadTool implements Tool {
   ): Promise<ToolResult> {
     const startTime = Date.now();
 
+    logger.info({ path: input.path, traceId: context.traceId }, 'FileReadTool execution started');
+
     try {
       const content = await readFile(input.path, 'utf-8');
+      logger.info(
+        { path: input.path, contentLength: content.length, traceId: context.traceId },
+        'File read successfully',
+      );
       return {
         data: content,
         error: null,
@@ -30,6 +37,7 @@ export class FileReadTool implements Tool {
         },
       };
     } catch (error) {
+      logger.error({ path: input.path, error, traceId: context.traceId }, 'File read failed');
       return {
         data: null,
         error: error instanceof Error ? error : new Error(String(error)),

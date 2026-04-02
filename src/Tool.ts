@@ -2,10 +2,11 @@ import { z } from 'zod';
 
 export interface ToolContext {
   cwd: string;
-  gitState?: string;
+  gitState: string;
   env: Record<string, string>;
   sessionId: string;
   traceId: string;
+  previousResults?: Array<{ toolName: string; result: ToolResult }>;
 }
 
 export interface ToolMetadata {
