@@ -2,10 +2,10 @@ import { describe, it, expect, beforeEach } from 'bun:test';
 import { ToolExecutor, createToolContext } from './ToolExecutor';
 import { FileReadTool } from './tools/FileReadTool';
 import { FileWriteTool } from './tools/FileWriteTool';
-import { BashTool, type PermissionMode } from './tools/BashTool';
+import { BashTool } from './tools/BashTool';
 import { GlobTool } from './tools/GlobTool';
 import { GrepTool } from './tools/GrepTool';
-import { writeFile, unlink, mkdir } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 

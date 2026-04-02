@@ -36,22 +36,22 @@
 - [x] **3.2** Implement tool execution engine with timeout handling
 - [x] **3.3** Build File Operations tools: FileReadTool (implemented), FileWriteTool, FileEditTool, GlobTool, GrepTool
 - [x] **3.4** Build Shell tool: BashTool with permission-gated execution
-- [ ] **3.5** Build Web tools: WebSearchTool, WebFetchTool
-- [ ] **3.6** Build Task Management tools: TaskCreateTool, TaskListTool, TaskUpdateTool
+- [x] **3.5** Build Web tools: WebSearchTool, WebFetchTool
+- [x] **3.6** Build Task Management tools: TaskCreateTool, TaskListTool, TaskUpdateTool
 - [x] **3.7** Implement parallel and sequential tool execution patterns
 - [ ] **3.8** Add tool plugin registration system for extensibility
 
 ### Phase 4: Context and Memory Management
 
 - [x] **4.1** Implement Context Manager for git state capture (branch, diff, commits) - in QueryEngine.buildContext()
-- [ ] **4.2** Build file tree indexer with change detection
+- [x] **4.2** Build file tree indexer with change detection
 - [ ] **4.3** Add LSP integration for symbol-level context
 - [ ] **4.4** Implement shell environment variable tracking (.env parsing)
 - [ ] **4.5** Build context injection protocol with snipping for overflow
-- [ ] **4.6** Create memory storage system (`memdir/` structure)
-- [ ] **4.7** Implement session persistence across restarts
+- [x] **4.6** Create memory storage system (`memdir/` structure)
+- [x] **4.7** Implement session persistence across restarts
 - [ ] **4.8** Add autoDream background memory consolidation
-- [ ] **4.9** Implement sensitive data redaction for memory storage
+- [x] **4.9** Implement sensitive data redaction for memory storage
 
 ### Phase 5: Safety and Permissions
 
@@ -142,5 +142,6 @@ Phase 1 ─┬─► Phase 2 ─┬─► Phase 3 ─┬─► Phase 4
 
 - Phase 1: Foundation (all tasks)
 - Phase 2: Core Agent Loop - 2.1, 2.2, 2.5
-- Phase 3: Tool Execution System - 3.1, 3.2, 3.3, 3.4, 3.7 (FileReadTool, FileWriteTool, FileEditTool, GlobTool, GrepTool, BashTool, ToolExecutor)
+- Phase 3: Tool Execution System - 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7 (WebSearchTool, WebFetchTool, TaskCreateTool, TaskListTool, TaskUpdateTool added)
+- Phase 4: Context and Memory Management - 4.1, 4.2, 4.6, 4.7, 4.9 (FileTreeIndexer, MemoryStorage, session persistence, redaction)
 - Phase 5: Safety and Permissions - 5.1, 5.2, 5.3 (permission modes, security validation, pattern blocking)
