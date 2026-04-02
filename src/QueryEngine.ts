@@ -95,7 +95,7 @@ export class QueryEngine {
   /**
    * Persist current session state to disk
    */
-  private async persistSession(): Promise<void> {
+  async persistSession(): Promise<void> {
     if (!this.memoryStorage) return;
 
     try {

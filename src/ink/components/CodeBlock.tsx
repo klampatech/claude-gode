@@ -12,7 +12,7 @@ export interface CodeBlockProps {
 }
 
 interface TokenStyle {
-  color: string;
+  color?: string;
   bold?: boolean;
 }
 
@@ -123,7 +123,13 @@ export function CodeBlock({ code, language = 'javascript', showLineNumbers = fal
     if (token.text.includes('\n')) {
       const parts = token.text.split('\n');
       for (let i = 0; i < parts.length; i++) {
-        if (parts[i]) currentLine.push({ text: parts[i], style: token.style });
+        if (parts[i]) {
+          if (token.style !== undefined) {
+            currentLine.push({ text: parts[i], style: token.style });
+          } else {
+            currentLine.push({ text: parts[i] });
+          }
+        }
         if (i < parts.length - 1) {
           tokenizedLines.push(currentLine);
           currentLine = [];
@@ -144,7 +150,7 @@ export function CodeBlock({ code, language = 'javascript', showLineNumbers = fal
             <Box key={i}>
               <Text dimColor>{String(i + 1).padStart(3, ' ')} │ </Text>
               {line.map((token, j) => (
-                <Text key={j} color={token.style?.color} bold={token.style?.bold}>
+                <Text key={j} {...(token.style?.color !== undefined && { color: token.style.color })} {...(token.style?.bold !== undefined && { bold: token.style.bold })}>
                   {token.text}
                 </Text>
               ))}

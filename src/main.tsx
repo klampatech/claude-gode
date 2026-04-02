@@ -36,11 +36,12 @@ async function loadEnv(): Promise<void> {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const engineRef: { engine: QueryEngine | null } = { engine: null };
+  // Placeholder for cleanup - will be set after engine is created
+  const engineHolder: { current: { persistSession: () => Promise<void> } | null } = { current: null };
 
   // Set up global error handlers with cleanup
   setupGlobalErrorHandlers({
-    cleanup: createEngineCleanup(engineRef as { engine: { persistSession: () => Promise<void> } }),
+    cleanup: createEngineCleanup(engineHolder),
   });
 
   const startCli = async () => {
@@ -92,15 +93,19 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.env.CLAUDE_CONTEXT_WINDOW = contextWindow.toString();
         process.env.CLAUDE_PERMISSION_MODE = permissionMode;
 
-        const engine = new QueryEngine({
+        const engineOptions: ConstructorParameters<typeof QueryEngine>[0] = {
           projectPath: options.projectPath ?? process.cwd(),
           contextWindow,
           permissionMode,
-          restoreSessionId: options.restoreSession,
-        });
+        };
+        if (options.restoreSession) {
+          engineOptions.restoreSessionId = options.restoreSession;
+        }
+
+        const engine = new QueryEngine(engineOptions);
 
         // Make engine available for cleanup handlers
-        engineRef.engine = engine;
+        engineHolder.current = engine;
 
         // Initialize the engine (sets up memory storage and optionally restores session)
         await engine.initialize();

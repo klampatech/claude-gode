@@ -16,7 +16,7 @@ export interface HealthStatus {
   memory_mb: number;
 }
 
-let startTime = Date.now();
+const startTime = Date.now();
 let sessionCount = 0;
 
 /**
@@ -29,7 +29,7 @@ export function updateSessionCount(count: number): void {
 /**
  * Check if a dependency is available
  */
-function checkDependency(name: string, check: () => boolean): 'up' | 'down' {
+function checkDependency(_name: string, check: () => boolean): 'up' | 'down' {
   try {
     return check() ? 'up' : 'down';
   } catch {

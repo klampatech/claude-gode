@@ -20,8 +20,6 @@ import {
   recordMessage,
   recordAgentSpawned,
   recordAgentCrashed,
-  recordUncaughtException,
-  recordUnhandledRejection,
   getMetricsSnapshot,
   resetMetrics,
 } from './metrics.js';

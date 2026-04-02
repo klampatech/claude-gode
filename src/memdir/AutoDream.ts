@@ -4,11 +4,10 @@
  * from recent sessions and store them as semantic memories.
  */
 
-import { spawn, ChildProcess } from 'child_process';
 import { logger } from '../utils/logger.js';
 import { createLogContext } from '../utils/logger.js';
 import { MemoryStorage, ExtractedFact } from '../memdir/MemoryStorage.js';
-import { readdir, readFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 export interface DreamConfig {
@@ -88,7 +87,7 @@ export class AutoDream {
    * Check if conditions are met and run if so.
    */
   private async checkAndRun(): Promise<void> {
-    const ctx = createLogContext(undefined, this.basePath);
+    createLogContext(undefined, this.basePath);
     const now = new Date();
 
     // Check time-based trigger

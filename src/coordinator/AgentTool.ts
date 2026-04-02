@@ -147,7 +147,8 @@ export class AgentTool implements Tool {
 
           const results = coordinator.aggregateResults();
           const agentId = args.agentId ?? '';
-          const agentResult = results[Object.keys(results).find((k) => k.includes(agentId))] ?? null;
+          const matchingKey = Object.keys(results).find((k) => k.includes(agentId));
+          const agentResult = matchingKey ? results[matchingKey] : null;
 
           return {
             data: agentResult,

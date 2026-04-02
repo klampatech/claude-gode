@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises';
-import { resolve, dirname, join } from 'path';
+import { resolve } from 'path';
 import { existsSync } from 'fs';
 import { logger } from '../utils/logger';
 import { redact } from '../utils/secrets';
@@ -71,7 +71,7 @@ export class EnvParser {
   /**
    * Parse a single .env file content
    */
-  parseEnvContent(content: string, source: string): EnvVariable[] {
+  parseEnvContent(content: string, _source: string): EnvVariable[] {
     const vars: EnvVariable[] = [];
     const lines = content.split('\n');
 

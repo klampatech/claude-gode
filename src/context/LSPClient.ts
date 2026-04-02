@@ -88,7 +88,6 @@ export class LSPClient extends EventEmitter {
     reject: (reason: unknown) => void;
   }>();
   private ready = false;
-  private capabilities: Record<string, unknown> = {};
 
   constructor(projectPath: string, languageId: string) {
     super();
@@ -323,7 +322,8 @@ export class LSPClient extends EventEmitter {
       },
     });
 
-    this.capabilities = (result as { capabilities?: Record<string, unknown> })?.capabilities || {};
+    // Store capabilities (unused but available for future use)
+    void (result as { capabilities?: Record<string, unknown> })?.capabilities;
 
     // Send initialized notification
     this.send({

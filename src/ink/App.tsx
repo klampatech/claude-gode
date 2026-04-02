@@ -2,12 +2,10 @@
  * Main App component for Ink terminal UI.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Text } from 'ink';
 import { Message } from './components/Message.js';
 import { Spinner } from './components/Spinner.js';
-import { Dialog } from './components/Dialog.js';
-import { CodeBlock } from './components/CodeBlock.js';
 import { ErrorBanner } from './components/ErrorBanner.js';
 import { BuddyDisplay } from './components/BuddyDisplay.js';
 
@@ -32,33 +30,6 @@ export function App(): React.ReactElement {
     error: null,
     buddyState: 'idle',
   });
-
-  // Add message to the chat
-  const addMessage = (message: Omit<MessageData, 'id' | 'timestamp'>) => {
-    const newMessage: MessageData = {
-      ...message,
-      id: `msg-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-    };
-    setState((prev) => ({
-      ...prev,
-      messages: [...prev.messages, newMessage],
-    }));
-  };
-
-  // Clear all messages
-  const clearMessages = () => {
-    setState((prev) => ({ ...prev, messages: [] }));
-  };
-
-  // Set loading state
-  const setLoading = (loading: boolean) => {
-    setState((prev) => ({
-      ...prev,
-      isLoading: loading,
-      buddyState: loading ? 'working' : 'idle',
-    }));
-  };
 
   // Set error
   const setError = (error: string | null) => {

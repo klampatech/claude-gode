@@ -25,7 +25,7 @@ export function Dialog({
 }: DialogProps): React.ReactElement {
   const [selected, setSelected] = useState<'confirm' | 'cancel'>('confirm');
 
-  useInput((input, key) => {
+  useInput((_input, key) => {
     if (key.leftArrow || key.rightArrow || key.tab) {
       setSelected((prev) => (prev === 'confirm' ? 'cancel' : 'confirm'));
     } else if (key.return) {

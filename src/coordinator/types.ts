@@ -198,8 +198,8 @@ export class AgentCoordinator {
       id: uuidv4(),
       name,
       role,
-      description,
-      instructions,
+      ...(description !== undefined && { description }),
+      ...(instructions !== undefined && { instructions }),
       context: { ...this.parentContext },
     };
 
@@ -229,7 +229,7 @@ export class AgentCoordinator {
       to: toAgentId,
       type,
       payload,
-      replyTo,
+      ...(replyTo !== undefined && { replyTo }),
       timestamp: new Date().toISOString(),
     };
 

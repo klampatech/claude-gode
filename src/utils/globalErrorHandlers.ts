@@ -86,7 +86,7 @@ export function setupGlobalErrorHandlers(
   });
 
   // Handle unhandled promise rejections
-  process.on('unhandledRejection', async (reason: unknown, promise: Promise<unknown>) => {
+  process.on('unhandledRejection', async (reason: unknown, _promise: Promise<unknown>) => {
     const reasonStr = reason instanceof Error
       ? { name: reason.name, message: reason.message, stack: reason.stack }
       : String(reason);
@@ -166,10 +166,11 @@ export function setupGlobalErrorHandlers(
 /**
  * Create a cleanup function for the QueryEngine
  */
-export function createEngineCleanup(engine: { persistSession: () => Promise<void> }): () => Promise<void> {
+export function createEngineCleanup(engineHolder: { current: { persistSession: () => Promise<void> } | null }): () => void | Promise<void> {
   return async () => {
+    if (!engineHolder.current) return;
     try {
-      await engine.persistSession();
+      await engineHolder.current.persistSession();
       logger.info('Session state saved during shutdown');
     } catch (error) {
       logger.error({ err: error }, 'Failed to save session during shutdown');

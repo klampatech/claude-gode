@@ -4,7 +4,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import Spinner_ from 'nanospinner';
 
 export interface SpinnerProps {
   label?: string;
