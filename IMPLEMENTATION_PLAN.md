@@ -109,7 +109,7 @@
 ### Phase 10: Additional Tools and Integration
 
 - [ ] **10.1** Build MCP tools: MCPTool (client + server)
-- [ ] **10.2** Implement SkillTool for built-in skills
+- [x] **10.2** Implement SkillTool for built-in skills
 - [ ] **10.3** Add scheduling tools: ScheduleCronTool, CronCreate, CronDelete, CronList
 - [ ] **10.4** Build TeamCreateTool, TeamDeleteTool
 - [ ] **10.5** Add voice input support (voice module)
