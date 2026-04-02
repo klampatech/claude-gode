@@ -36,6 +36,8 @@ export interface QueryEngineOptions {
   projectPath: string;
   contextWindow: number;
   permissionMode: 'ask' | 'allow' | 'deny' | 'limited';
+  /** Optional session ID to restore from previous session */
+  restoreSessionId?: string;
 }
 
 export interface ConversationContext {
@@ -55,10 +57,10 @@ export class QueryEngine {
   private envParser: EnvParser;
 
   constructor(options: QueryEngineOptions) {
-    this.sessionId = uuidv4();
     this.options = options;
     this.envParser = new EnvParser(options.projectPath);
-    logger.info({ sessionId: this.sessionId }, 'QueryEngine initialized');
+    this.sessionId = options.restoreSessionId ?? uuidv4();
+    logger.info({ sessionId: this.sessionId, restored: !!options.restoreSessionId }, 'QueryEngine initialized');
   }
 
   /**
@@ -68,11 +70,22 @@ export class QueryEngine {
     this.memoryStorage = new MemoryStorage(this.options.projectPath);
     await this.memoryStorage.initialize();
 
-    // Try to load the most recent session if exists
-    const sessions = await this.memoryStorage.listSessions();
-    if (sessions.length > 0) {
-      // For now, we start fresh but could restore previous session
-      logger.info({ sessionId: this.sessionId }, 'Starting new session (previous sessions available)');
+    // Try to restore previous session if requested
+    if (this.options.restoreSessionId) {
+      const restored = await this.restoreSession(this.options.restoreSessionId);
+      if (restored) {
+        logger.info({ sessionId: this.sessionId }, 'Session restored successfully');
+      } else {
+        logger.warn({ sessionId: this.options.restoreSessionId }, 'Failed to restore session, starting fresh');
+        this.sessionId = uuidv4();
+      }
+    } else {
+      // Try to load the most recent session if exists
+      const sessions = await this.memoryStorage.listSessions();
+      if (sessions.length > 0) {
+        // For now, we start fresh but could restore previous session
+        logger.info({ sessionId: this.sessionId }, 'Starting new session (previous sessions available)');
+      }
     }
 
     // Save initial session state

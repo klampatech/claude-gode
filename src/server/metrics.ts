@@ -18,6 +18,8 @@ const metrics = {
   messages_total: 0,
   agents_spawned: 0,
   agents_crashed: 0,
+  uncaught_exceptions: 0,
+  unhandled_rejections: 0,
 };
 
 // Latency tracking (in ms)
@@ -89,6 +91,20 @@ export function recordAgentCrashed(): void {
 }
 
 /**
+ * Record uncaught exception
+ */
+export function recordUncaughtException(): void {
+  metrics.uncaught_exceptions++;
+}
+
+/**
+ * Record unhandled promise rejection
+ */
+export function recordUnhandledRejection(): void {
+  metrics.unhandled_rejections++;
+}
+
+/**
  * Calculate percentile from sorted array
  */
 function percentile(arr: number[], p: number): number {
@@ -152,6 +168,15 @@ export function generateMetrics(): string {
   lines.push(`# HELP claude_agents_crashed Total number of agents that crashed`);
   lines.push(`# TYPE claude_agents_crashed counter`);
   lines.push(`claude_agents_crashed ${metrics.agents_crashed}`);
+
+  // Error handling metrics
+  lines.push(`# HELP claude_uncaught_exceptions Total number of uncaught exceptions`);
+  lines.push(`# TYPE claude_uncaught_exceptions counter`);
+  lines.push(`claude_uncaught_exceptions ${metrics.uncaught_exceptions}`);
+
+  lines.push(`# HELP claude_unhandled_rejections Total number of unhandled promise rejections`);
+  lines.push(`# TYPE claude_unhandled_rejections counter`);
+  lines.push(`claude_unhandled_rejections ${metrics.unhandled_rejections}`);
 
   // Latency metrics
   if (latencies.length > 0) {
