@@ -1,6 +1,7 @@
 import { logger } from './utils/logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { AdkAgent } from './AdkAgent.js';
+import { MemoryStorage } from './memdir/MemoryStorage.js';
 
 export interface Message {
   role: 'user' | 'assistant' | 'tool';
@@ -49,11 +50,71 @@ export class QueryEngine {
   private sessionId: string;
   private messages: Message[] = [];
   private options: QueryEngineOptions;
+  private memoryStorage: MemoryStorage | null = null;
 
   constructor(options: QueryEngineOptions) {
     this.sessionId = uuidv4();
     this.options = options;
     logger.info({ sessionId: this.sessionId }, 'QueryEngine initialized');
+  }
+
+  /**
+   * Initialize memory storage for session persistence
+   */
+  async initialize(): Promise<void> {
+    this.memoryStorage = new MemoryStorage(this.options.projectPath);
+    await this.memoryStorage.initialize();
+
+    // Try to load the most recent session if exists
+    const sessions = await this.memoryStorage.listSessions();
+    if (sessions.length > 0) {
+      // For now, we start fresh but could restore previous session
+      logger.info({ sessionId: this.sessionId }, 'Starting new session (previous sessions available)');
+    }
+
+    // Save initial session state
+    await this.persistSession();
+  }
+
+  /**
+   * Persist current session state to disk
+   */
+  private async persistSession(): Promise<void> {
+    if (!this.memoryStorage) return;
+
+    try {
+      await this.memoryStorage.saveSession({
+        sessionId: this.sessionId,
+        projectPath: this.options.projectPath,
+        messages: this.messages.map(m => ({
+          role: m.role,
+          content: m.content,
+          timestamp: m.metadata?.timestamp || new Date().toISOString(),
+        })),
+        contextWindow: this.options.contextWindow,
+        permissionMode: this.options.permissionMode,
+      });
+      logger.debug({ sessionId: this.sessionId }, 'Session persisted');
+    } catch (error) {
+      logger.warn({ err: error }, 'Failed to persist session');
+    }
+  }
+
+  /**
+   * Trim messages to fit within context window
+   * Keeps recent messages and oldest messages as anchors
+   */
+  private trimMessages(): void {
+    const maxMessages = this.options.contextWindow;
+    if (this.messages.length <= maxMessages) return;
+
+    // Keep: first 2 messages, last (maxMessages - 2) messages
+    const keepCount = maxMessages - 2;
+    const oldest = this.messages.slice(0, 2);
+    const recent = this.messages.slice(-keepCount);
+
+    this.messages = [...oldest, ...recent];
+    logger.debug({ messageCount: this.messages.length }, 'Context window trimmed');
   }
 
   private async buildContext(): Promise<ConversationContext> {
@@ -76,6 +137,17 @@ export class QueryEngine {
     }
 
     context.fileTree = await this.getFileTree();
+
+    // Load relevant memories
+    if (this.memoryStorage) {
+      const memories = await this.memoryStorage.loadMemories({
+        type: 'project',
+        limit: 5,
+      });
+      if (memories.length > 0) {
+        context.memories = memories.map(m => m.content).join('\n\n');
+      }
+    }
 
     return context;
   }
@@ -109,9 +181,20 @@ export class QueryEngine {
     userInput: string,
     context: ConversationContext,
   ): Promise<string> {
+    // Include conversation history in prompt
+    const historySection = this.messages.length > 0
+      ? `## Conversation History\n${this.messages.map(m =>
+          `${m.role}: ${m.content.substring(0, 200)}${m.content.length > 200 ? '...' : ''}`
+        ).join('\n')}\n\n`
+      : '';
+
     const contextSection = `## Project Context\n\n### Git State\n\`\`\`\n${context.gitState || 'N/A'}\n\`\`\`\n\n### File Tree\n\`\`\`\n${context.fileTree || 'N/A'}\n\`\`\`\n`;
 
-    return `${contextSection}\n## User Request\n${userInput}`;
+    const memoriesSection = context.memories
+      ? `## Relevant Memories\n\`\`\`\n${context.memories}\n\`\`\`\n`
+      : '';
+
+    return `${historySection}${contextSection}${memoriesSection}## User Request\n${userInput}`;
   }
 
   async processQuery(userInput: string): Promise<void> {
@@ -131,7 +214,9 @@ export class QueryEngine {
       },
     });
 
-    // Placeholder for actual AI processing - in production this would use Google ADK
+    // Trim to context window before sending to model
+    this.trimMessages();
+
     const response = await this.callModel(prompt, traceId);
 
     this.messages.push({
@@ -143,6 +228,9 @@ export class QueryEngine {
         model: 'claude-code',
       },
     });
+
+    // Persist after each operation
+    await this.persistSession();
 
     console.log(response);
   }
@@ -182,6 +270,9 @@ export class QueryEngine {
   }
 
   async startInteractive(): Promise<void> {
+    // Initialize memory storage first
+    await this.initialize();
+
     console.log('Claude Code Interactive Mode');
     console.log('==============================');
     console.log('Type your request and press Enter. Press Ctrl+C to exit.\n');
@@ -211,5 +302,32 @@ export class QueryEngine {
 
   getMessages(): Message[] {
     return this.messages;
+  }
+
+  /**
+   * Restore session from a previous session ID
+   */
+  async restoreSession(previousSessionId: string): Promise<boolean> {
+    if (!this.memoryStorage) {
+      await this.initialize();
+    }
+
+    const session = await this.memoryStorage!.loadSession(previousSessionId);
+    if (session) {
+      this.sessionId = session.sessionId;
+      this.messages = session.messages.map(m => ({
+        role: m.role,
+        content: m.content,
+        metadata: {
+          timestamp: m.timestamp,
+          sessionId: this.sessionId,
+          model: 'claude-code',
+        },
+      }));
+      logger.info({ sessionId: this.sessionId }, 'Session restored');
+      return true;
+    }
+
+    return false;
   }
 }
