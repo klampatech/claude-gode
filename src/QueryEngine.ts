@@ -2,6 +2,7 @@ import { logger } from './utils/logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { AdkAgent } from './AdkAgent.js';
 import { MemoryStorage } from './memdir/MemoryStorage.js';
+import { EnvParser } from './context/EnvParser.js';
 
 export interface Message {
   role: 'user' | 'assistant' | 'tool';
@@ -51,10 +52,12 @@ export class QueryEngine {
   private messages: Message[] = [];
   private options: QueryEngineOptions;
   private memoryStorage: MemoryStorage | null = null;
+  private envParser: EnvParser;
 
   constructor(options: QueryEngineOptions) {
     this.sessionId = uuidv4();
     this.options = options;
+    this.envParser = new EnvParser(options.projectPath);
     logger.info({ sessionId: this.sessionId }, 'QueryEngine initialized');
   }
 
@@ -138,6 +141,14 @@ export class QueryEngine {
 
     context.fileTree = await this.getFileTree();
 
+    // Load environment variables for context
+    try {
+      context.envVars = await this.envParser.getFormattedForContext();
+    } catch (error) {
+      logger.debug({ err: error }, 'Failed to parse env files');
+      context.envVars = 'No environment variables found';
+    }
+
     // Load relevant memories
     if (this.memoryStorage) {
       const memories = await this.memoryStorage.loadMemories({
@@ -188,7 +199,7 @@ export class QueryEngine {
         ).join('\n')}\n\n`
       : '';
 
-    const contextSection = `## Project Context\n\n### Git State\n\`\`\`\n${context.gitState || 'N/A'}\n\`\`\`\n\n### File Tree\n\`\`\`\n${context.fileTree || 'N/A'}\n\`\`\`\n`;
+    const contextSection = `## Project Context\n\n### Git State\n\`\`\`\n${context.gitState || 'N/A'}\n\`\`\`\n\n### File Tree\n\`\`\`\n${context.fileTree || 'N/A'}\n\`\`\`\n\n### Environment Variables\n\`\`\`\n${context.envVars || 'N/A'}\n\`\`\`\n`;
 
     const memoriesSection = context.memories
       ? `## Relevant Memories\n\`\`\`\n${context.memories}\n\`\`\`\n`

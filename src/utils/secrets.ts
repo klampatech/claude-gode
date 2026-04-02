@@ -133,6 +133,22 @@ export function redactEnv(env: Record<string, string | undefined>): Record<strin
 }
 
 /**
+ * Redact a single value if it looks like a secret.
+ * @param value - The value to possibly redact
+ * @returns The value or '[REDACTED]' if it appears to be a secret
+ */
+export function redact(value: string): string {
+  // Quick check if value looks like a secret
+  if (/^[a-zA-Z0-9_-]{8,}$/.test(value) && value.length >= 16) {
+    // Looks like a token or key
+    if (!/^(true|false|null|undefined|\d+(\.\d+)?)$/.test(value)) {
+      return '[REDACTED]';
+    }
+  }
+  return value;
+}
+
+/**
  * Scan a string for secrets without modifying it.
  * @param input - The string to scan
  * @returns Array of detected secret types
