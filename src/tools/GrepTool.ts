@@ -36,7 +36,7 @@ export class GrepTool implements Tool {
     context: ToolContext,
   ): Promise<ToolResult> {
     const startTime = Date.now();
-    const path = input.path ?? context.cwd;
+    const path = input.path ?? context.cwd ?? context.projectPath ?? process.cwd();
 
     try {
       const matches: GrepMatch[] = [];

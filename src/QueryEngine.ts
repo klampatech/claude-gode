@@ -1,5 +1,6 @@
 import { logger } from './utils/logger.js';
 import { v4 as uuidv4 } from 'uuid';
+import { AdkAgent } from './AdkAgent.js';
 
 export interface Message {
   role: 'user' | 'assistant' | 'tool';
@@ -146,18 +147,38 @@ export class QueryEngine {
     console.log(response);
   }
 
-  private async callModel(_prompt: string, traceId: string): Promise<string> {
-    // TODO: Integrate with Google ADK for actual AI processing
-    // This is a placeholder that will be replaced with actual implementation
+  private async callModel(prompt: string, traceId: string): Promise<string> {
+    // Use Google ADK for AI processing
+    logger.info({ traceId }, 'Calling model via Google ADK');
 
-    logger.info({ traceId }, 'Calling model (placeholder)');
-
-    const apiKey = process.env.CLAUDE_API_KEY;
+    const apiKey = process.env.GOOGLE_GENAI_API_KEY;
     if (!apiKey) {
-      return `Welcome to Claude Code!\n\nTo get started, please set the CLAUDE_API_KEY environment variable in your .env file.\n\nYou can copy .env.example to .env and add your API key.\n\nAvailable commands:\n  claude [prompt]  - Send a prompt to Claude\n  claude           - Start interactive mode`;
+      // Fallback to placeholder if no Google ADK API key
+      logger.info({ traceId }, 'GOOGLE_GENAI_API_KEY not set, using fallback response');
+      return `Welcome to Claude Code!\n\nTo get started with full AI capabilities, please set the GOOGLE_GENAI_API_KEY environment variable in your .env file.\n\nYou can copy .env.example to .env and add your Google AI API key.\n\nAvailable commands:\n  claude [prompt]  - Send a prompt to Claude\n  claude           - Start interactive mode`;
     }
 
-    return `Claude Code is configured and ready!\n\nProject: ${this.options.projectPath}\nPermission Mode: ${this.options.permissionMode}\n\nNote: Google ADK integration is not yet implemented. This is a placeholder response.`;
+    try {
+      const adkAgent = new AdkAgent(
+        {
+          projectPath: this.options.projectPath,
+          contextWindow: this.options.contextWindow,
+          permissionMode: this.options.permissionMode,
+        },
+        { model: 'gemini-2.0-flash' },
+      );
+
+      const initialized = await adkAgent.initialize();
+      if (!initialized) {
+        return `Claude Code is configured but failed to initialize the AI agent. Please check your GOOGLE_GENAI_API_KEY.`;
+      }
+
+      return await adkAgent.processQuery(prompt);
+    } catch (error) {
+      const err = error as Error;
+      logger.error({ err, traceId }, 'ADK call failed');
+      return `I encountered an error: ${err.message}. Please check your GOOGLE_GENAI_API_KEY.`;
+    }
   }
 
   async startInteractive(): Promise<void> {

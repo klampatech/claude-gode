@@ -25,7 +25,7 @@ export class GlobTool implements Tool {
     context: ToolContext,
   ): Promise<ToolResult> {
     const startTime = Date.now();
-    const cwd = input.cwd ?? context.cwd;
+    const cwd = input.cwd ?? context.cwd ?? context.projectPath ?? process.cwd();
     this._baseCwd = cwd;
 
     try {

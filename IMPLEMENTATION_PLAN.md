@@ -25,10 +25,10 @@
 
 - [x] **2.1** Implement CLI entrypoint (`main.tsx`) with Commander.js
 - [x] **2.2** Create `QueryEngine.ts` - core query processing logic
-- [ ] **2.3** Integrate Google ADK for intent understanding and decision-making
+- [x] **2.3** Integrate Google ADK for intent understanding and decision-making
 - [ ] **2.4** Implement conversation history management with context window
 - [x] **2.5** Add structured logging with trace ID propagation
-- [ ] **2.6** Implement streaming response handling for terminal display
+- [x] **2.6** Implement streaming response handling for terminal display
 
 ### Phase 3: Tool Execution System
 
@@ -141,7 +141,7 @@ Phase 1 ─┬─► Phase 2 ─┬─► Phase 3 ─┬─► Phase 4
 ## Completed
 
 - Phase 1: Foundation (all tasks)
-- Phase 2: Core Agent Loop - 2.1, 2.2, 2.5
+- Phase 2: Core Agent Loop - 2.1, 2.2, 2.3, 2.5, 2.6 (Google ADK integration, streaming responses)
 - Phase 3: Tool Execution System - 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7 (WebSearchTool, WebFetchTool, TaskCreateTool, TaskListTool, TaskUpdateTool added)
 - Phase 4: Context and Memory Management - 4.1, 4.2, 4.6, 4.7, 4.9 (FileTreeIndexer, MemoryStorage, session persistence, redaction)
 - Phase 5: Safety and Permissions - 5.1, 5.2, 5.3 (permission modes, security validation, pattern blocking)
