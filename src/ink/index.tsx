@@ -19,5 +19,5 @@ export { BuddyDisplay } from './components/BuddyDisplay.js';
 export { MorePrompt } from './components/MorePrompt.js';
 
 export function renderApp(): void {
-  render(<App />);
+  render(React.createElement(App));
 }

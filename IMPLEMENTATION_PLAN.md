@@ -59,9 +59,9 @@
 - [x] **5.2** Build bash command security validation
 - [x] **5.3** Add destructive pattern detection and blocking
 - [x] **5.4** Implement secret detection and redaction (API keys, tokens)
-- [ ] **5.5** Add confirmation prompts for dangerous operations
-- [ ] **5.6** Build security audit logging system
-- [ ] **5.7** Implement git stash before destructive operations
+- [x] **5.5** Add confirmation prompts for dangerous operations
+- [x] **5.6** Build security audit logging system
+- [x] **5.7** Implement git stash before destructive operations
 
 ### Phase 6: Terminal UI Rendering
 
@@ -144,5 +144,5 @@ Phase 1 ─┬─► Phase 2 ─┬─► Phase 3 ─┬─► Phase 4
 - Phase 2: Core Agent Loop - 2.1, 2.2, 2.3, 2.4, 2.5, 2.6 (Google ADK integration, streaming responses, conversation history management)
 - Phase 3: Tool Execution System - 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8 (WebSearchTool, WebFetchTool, TaskCreateTool, TaskListTool, TaskUpdateTool, tool plugin registration)
 - Phase 4: Context and Memory Management - 4.1, 4.2, 4.3, 4.4, 4.6, 4.7, 4.8, 4.9 (FileTreeIndexer, LSP integration, EnvParser, MemoryStorage, session persistence, autoDream, redaction)
-- Phase 5: Safety and Permissions - 5.1, 5.2, 5.3, 5.4 (permission modes, security validation, pattern blocking, secret redaction)
+- Phase 5: Safety and Permissions - 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7 (permission modes, security validation, pattern blocking, secret redaction, confirmation prompts, audit logging, git stash)
 - Phase 6: Terminal UI Rendering - 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10, 6.11 (React/Ink, Message, Spinner, Dialog, CodeBlock, Table, ProgressBar, ErrorBanner, BuddyDisplay, MorePrompt)

@@ -3,6 +3,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import type { Tool, ToolContext, ToolResult } from '../Tool';
 import { logger } from '../utils/logger';
+import { getSecurityService, type GitStashResult } from '../utils/security';
 
 const execAsync = promisify(exec);
 
@@ -278,6 +279,74 @@ export class BashTool implements Tool {
       requiresConfirmation: false,
       reason: 'Command allowed',
     };
+  }
+
+  /**
+   * Handle confirmation response for a dangerous command.
+   */
+  async handleConfirmation(
+    confirmationId: string,
+    approve: boolean,
+    context: ToolContext,
+  ): Promise<{ success: boolean; executed: boolean }> {
+    const securityService = getSecurityService();
+    const sessionId = context.sessionId ?? '';
+    const confirmed = await securityService.respondToConfirmation(
+      confirmationId,
+      approve ? 'approved' : 'denied',
+      sessionId,
+    );
+
+    if (!confirmed) {
+      return { success: false, executed: false };
+    }
+
+    // Get the original command from confirmation state
+    const confirmationState = securityService.getConfirmation(confirmationId);
+    if (!confirmationState) {
+      return { success: false, executed: false };
+    }
+
+    const command = confirmationState.details.command as string;
+    const cwd: string = (confirmationState.details.cwd as string) ?? (context.cwd ?? '');
+
+    // Execute the command after confirmation
+    try {
+      await execAsync(command, {
+        cwd,
+        timeout: this.config.timeoutMs,
+        maxBuffer: 10 * 1024 * 1024,
+      });
+
+      logger.info(
+        { command, exitCode: 0, traceId: context.traceId },
+        'Confirmed command executed',
+      );
+
+      return { success: true, executed: true };
+    } catch (error) {
+      const err = error as { code?: number; stderr?: string };
+      logger.warn({ command, error: err.stderr }, 'Confirmed command failed');
+      return { success: false, executed: true };
+    }
+  }
+
+  /**
+   * Create git stash before destructive operation.
+   */
+  async stashBeforeDestructive(context: ToolContext): Promise<GitStashResult> {
+    const securityService = getSecurityService();
+    const cwd = context.cwd ?? '';
+    return securityService.createGitStash(cwd, context.traceId);
+  }
+
+  /**
+   * Restore git stash after operation.
+   */
+  async restoreStash(context: ToolContext, stashId: string): Promise<boolean> {
+    const securityService = getSecurityService();
+    const cwd = context.cwd ?? '';
+    return securityService.restoreGitStash(cwd, stashId, context.traceId);
   }
 
   /**
