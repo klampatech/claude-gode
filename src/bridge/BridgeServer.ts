@@ -10,7 +10,7 @@ import { FileSync, type FileSyncConfig } from './FileSync.js';
 import { SessionHandoffManager, type SessionHandoffConfig } from './SessionHandoff.js';
 import { RemoteSession, type RemoteSessionConfig } from './RemoteSession.js';
 import { OAuthFlow, type OAuthConfig } from './OAuthFlow.js';
-import { SessionHandoff, type BridgeMessage } from './Protocol.js';
+import { SessionHandoff, type BridgeMessage, type SessionState } from './Protocol.js';
 import { logger } from '../utils/logger.js';
 import { createServer, Server } from 'http';
 
@@ -207,7 +207,7 @@ export class BridgeServer {
     sessionId: string,
     from: 'terminal' | 'vscode',
     to: 'terminal' | 'vscode',
-    sessionState: Record<string, unknown>,
+    sessionState: SessionState,
   ): Promise<SessionHandoff> {
     if (!this.sessionHandoff) {
       throw new Error('Session handoff not enabled');
@@ -237,7 +237,7 @@ export class BridgeServer {
   /**
    * Accept session handoff
    */
-  async acceptHandoff(handoff: SessionHandoff): Promise<Record<string, unknown>> {
+  async acceptHandoff(handoff: SessionHandoff): Promise<SessionState> {
     if (!this.sessionHandoff) {
       throw new Error('Session handoff not enabled');
     }
